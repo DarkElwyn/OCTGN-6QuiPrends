@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<game name="6 Qui Prends"
+    id="af04f855-58c4-4db3-a191-45fe33381996"
+    version="1.0.0.0" 
+    tags="OCTGN 6 Qui Prends"
+    description="[2-10 joueurs][45min]
+	&#xd;Saurez-vous éviter le taureau ? Le but du jeu est simple : récolter le moins de cartes possible. Tous les coups sont permis !"
+    setsurl="https://darkelwyn.github.io/octgn/6QuiPrends/ico.png" 
+	gameurl="https://darkelwyn.github.io/octgn/6QuiPrends/"
+    authors="RomElwyn"
+    iconurl="https://darkelwyn.github.io/octgn/6QuiPrends/ico.png"
+    octgnVersion="3.1.240.0"
+    scriptVersion="3.1.0.2"
+    markersize="30"
+	usetwosidedtable="False"
+    >
+    <scripts>
+	  <script src="Scripts/actions.py" />
+    </scripts>
+    <events>
+		<event name="OnGameStarted" action="setup"/>
+		<event name="OnCardDoubleClicked" action="OnCardDoubleClicked"/>
+		<event name="OverrideCardsMoved" action="OverrideCardsMoved"/>
+	</events>
+    <sounds>
+    </sounds>
+    <fonts>
+    </fonts>
+    <proxygen definitionsrc="Proxies/proxydef.xml">
+    </proxygen>
+	<phases>
+	</phases>
+    <documents>
+		<document name="Regles" icon="" src="documents/regles.pdf" />
+    </documents> 
+    <gameModes>
+    </gameModes>
+    <globalvariables>
+		<globalvariable name="dateTimeDebut" value="0" /> 
+    </globalvariables>
+    <card back="cards/dos.jpg" front="cards/dos.jpg" width="125" height="192" cornerRadius="8">
+		<property name="Type" type="String" />
+		<property name="Proprio" type="String" />
+	</card>
+	<gameboards src="Resources/separateur.png" x="20" y="-400" width="100" height="800"/>
+    <table name="Table" visibility="undefined" ordered="False" width="1000" height="840" background="Resources/bg_camargue.jpg" backgroundStyle="uniformToFill">
+		<groupaction menu="Lancer un nouveau Round" execute="newRound" showIf="canNewRound" />
+		<groupaction menu="Durée" execute="printGameDuration" />
+    </table>
+   <player summary="({#Points})">
+	<globalvariable name="ready" value="False" />
+	
+    <hand name="Main" shortcut="ctrl+H" visibility="me" ordered="False" icon="Resources/hand.png">
+    </hand>
+    <group name="Points" shortcut="del" visibility="none"  icon="Resources/bull.png" collapsed="True">
+    </group>
+  </player>
+  <shared summary="aa">
+	<group name="Pioche" ordered="True" icon="Resources/deck.png" collapsed="False">
+	</group>
+  </shared>
+</game>
