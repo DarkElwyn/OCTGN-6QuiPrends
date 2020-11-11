@@ -50,8 +50,8 @@
    <player summary="({#Points})">
 	<globalvariable name="ready" value="False" />
 	
-    <hand name="Main" shortcut="ctrl+H" visibility="me" ordered="False" icon="Resources/hand.png">
-    </hand>
+    <group name="Hand" shortcut="ctrl+H" visibility="me" ordered="False" icon="Resources/hand.png" viewState="expanded">
+    </group>
     <group name="Points" shortcut="del" visibility="none"  icon="Resources/bull.png" collapsed="True">
     </group>
   </player>

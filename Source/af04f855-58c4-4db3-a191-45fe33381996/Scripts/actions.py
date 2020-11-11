@@ -27,6 +27,7 @@ def OverrideCardsMoved(args):
 					card.moveToTable(xGrid(x),yGrid(y))
 				else:
 					card.moveToTable(x,y)
+					card.select()
 		else:
 			whisper("moving elsewhere")
 			card.moveTo(toGroup[i])
@@ -45,7 +46,6 @@ def setup(args=[], first=True):
 		mute()
 		
 		if first:
-			setGlobalVariable("dateTimeDebut", time.mktime(datetime.now().timetuple()))
 			notify("################################")
 			notify("Pour jouer :\n")
 			notify("- Tous les joueurs jouent une carte dans la zone de préparation")
@@ -57,10 +57,12 @@ def setup(args=[], first=True):
 			notify("################################")
 		else:
 			notify("La nouvelle partie commence !")
+			for card in shared.pioche:
+				card.delete()
 			if gameIsOver():
 				return True
 			
-		
+		setGlobalVariable("dateTimeDebut", time.mktime(datetime.now().timetuple()))
 		createRangeCards(shared.pioche, 1, 104)
 		shared.pioche.shuffle()
 		
@@ -94,8 +96,10 @@ def iAmHost():
 
 def remoteCallAll(functionName, params = []):
 	mute()
+	globals()[functionName](params) #local call for me
 	for p in getPlayers():
-		remoteCall(p,functionName,params)
+		if p._id != me._id: #no network call for me
+			remoteCall(p,functionName,params)
 
 def notifyBarAll(message, color = "#FF0000"):
 	message = " "*250 + message + " "*250
@@ -109,7 +113,7 @@ def createRangeCards(destination, fromID, toID):
 def printGameDuration(a=0,b=0,c=0):
 	begin = datetime.fromtimestamp(eval(getGlobalVariable("dateTimeDebut")))
 	duration = datetime.utcfromtimestamp((datetime.now() - begin).total_seconds())
-	notify("La partie a durée {}".format(duration.strftime('%Hh%Mmin')))
+	notify("La partie a durée {}".format(duration.strftime('%Hh%Mmin%Ss')))
 
 def getNextPlayer():
 	return Player((me._id % len(getPlayers()))+1)
@@ -127,12 +131,12 @@ def flipAllCardsIfNeeded():
 			card.isFaceUp = True
 
 def xGrid(x):
-	result = (x//140)*140+50
+	result = ((x+20)//140)*140+50
 	# whisper("rounding x from {} into {}".format(x, result))
 	return result
 
 def yGrid(y):
-	result = (y//210)*210+10
+	result = ((y+105)//210)*210+10
 	# whisper("rounding y from {} into {}".format(y, result))
 	return result
 
@@ -180,15 +184,20 @@ def gameIsOver():
 	
 	return gameOver
 
+def cleanMyBoard(a=0):
+	mute()
+	for card in table:
+		if card.controller._id == me._id:
+			card.delete()
+
 ##############################
 ####### TABLE ACTIONS  #######
 ##############################
 
 def canNewRound(a=0,b=0,c=0):
-	return iAmHost and len(me.hand) == 0
+	return iAmHost() and len(me.hand) == 0
 
 def newRound(a=0,b=0,c=0):
 	mute()
-	for card in table:
-		card.delete()
+	remoteCallAll("cleanMyBoard")
 	setup(first=False)
