@@ -96,10 +96,10 @@ def iAmHost():
 
 def remoteCallAll(functionName, params = []):
 	mute()
-	globals()[functionName](params) #local call for me
 	for p in getPlayers():
 		if p._id != me._id: #no network call for me
 			remoteCall(p,functionName,params)
+	globals()[functionName](*params) #local call for me
 
 def notifyBarAll(message, color = "#FF0000"):
 	message = " "*250 + message + " "*250
